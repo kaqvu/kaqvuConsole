@@ -1,192 +1,139 @@
 # 🤖 kaqvuNodeBot
 
-System zarządzania botami Minecraft napisany w Node.js z wykorzystaniem biblioteki Mineflayer.
+Zaawansowany system zarządzania botami Minecraft z interfejsem webowym.
 
 ## 📋 Opis
 
-kaqvuNodeBot to zaawansowany system do zarządzania wieloma botami Minecraft jednocześnie. Umożliwia tworzenie, uruchamianie i kontrolowanie botów zarówno przez interfejs konsolowy, jak i przez nowoczesny interfejs webowy.
+kaqvuNodeBot to system do zarządzania wieloma botami Minecraft jednocześnie przez nowoczesny interfejs webowy. Stworzony z wykorzystaniem Mineflayer, Express i Socket.io.
 
 ## ✨ Funkcje
 
-- 🎮 **Zarządzanie wieloma botami** - Twórz i zarządzaj nieograniczoną liczbą botów
-- 💻 **Interfejs konsolowy** - Pełna kontrola przez terminal/CMD
-- 🌐 **Interfejs webowy** - Nowoczesny panel webowy z komunikacją w czasie rzeczywistym
-- 📝 **System logów** - Przeglądaj wiadomości z serwera i wysyłaj komendy
-- 💾 **Trwałe przechowywanie** - Wszystkie boty są zapisywane i ładowane automatycznie
-- 🔄 **Obsługa wielu wersji** - Wsparcie dla różnych wersji Minecraft
+- 🎮 **Zarządzanie wieloma botami** - Twórz i kontroluj nieograniczoną liczbę botów
+- 🌐 **Interfejs webowy** - Nowoczesny panel z komunikacją w czasie rzeczywistym
+- 📝 **System logów** - Przeglądaj wiadomości z serwera i wysyłaj komendy dla każdego bota
+- 🎒 **Podgląd ekwipunku** - Sprawdzaj inventory botów z enchantami
+- 🤖 **Anti-AFK** - Automatyczne skakanie
+- 🔄 **Auto-reconnect** - Automatyczne ponowne łączenie po rozłączeniu
+- 🎯 **Zaawansowane flagi** - Automatyzacja akcji po spawnie (klikanie, GUI, sloty)
+- 💾 **Trwałe przechowywanie** - Boty zapisywane automatycznie
+- 🚀 **Masowe operacje** - Uruchamiaj wszystkie boty jednocześnie
 
 ## 🚀 Instalacja
-
-1. Sklonuj repozytorium lub pobierz pliki
-2. Zainstaluj zależności:
 
 ```bash
 npm install
 ```
 
-3. (Opcjonalnie) Utwórz plik `.env` i ustaw port dla interfejsu webowego:
-
-```env
-PORT=8080
-```
-
 ## 📦 Wymagania
 
-- Node.js (wersja 14 lub nowsza)
-- npm lub yarn
+- Node.js (wersja 14+)
+- npm
 
-## 🎯 Użycie
-
-### Interfejs konsolowy
-
-Uruchom standardowy interfejs w terminalu:
+## 🎯 Uruchomienie
 
 ```bash
 npm start
 ```
 
-### Interfejs webowy
-
-Uruchom interfejs webowy:
-
-```bash
-npm run web
-```
-
-Następnie otwórz przeglądarkę i przejdź do `http://localhost:8080`
+Otwórz przeglądarkę: `http://localhost:8080`
 
 ## 📖 Komendy
 
 ### Zarządzanie botami
 
-- `create <nazwa> <ip[:port]> <wersja>` - Tworzy nowego bota (port opcjonalny, domyślnie 25565)
-- `start <nazwa>` - Uruchamia bota
+- `create <nazwa> <ip[:port]> <wersja>` - Tworzy bota
+- `start <nazwa|*> [flagi]` - Uruchamia bota/boty
 - `stop <nazwa>` - Zatrzymuje bota
 - `delete <nazwa>` - Usuwa bota
-- `list` - Wyświetla listę wszystkich botów
+- `list` - Lista wszystkich botów
+- `logs <nazwa>` - Wchodzi w logi bota
+- `listitems <nazwa|*> [together]` - Pokazuje ekwipunek
 
-### Przeglądanie logów
+### Flagi startu
 
-- `logs <nazwa>` - Wchodzi w tryb logów dla danego bota
-- `.exit` - Wychodzi z trybu logów (tylko w trybie logów)
+**Podstawowe:**
+- `-js <wiadomość>` - Wysyła wiadomość po zalogowaniu (1s delay)
+- `-r` - Auto-reconnect
+- `-j` - Anti-AFK jump (ciągłe skakanie)
+
+**Sekwencyjne (wykonują się po kolei, każda po 5s):**
+- `-ss <0-8>` - Ustawia slot w hotbarze
+- `-rc` - Klika prawy przycisk myszy
+- `-lc` - Klika lewy przycisk myszy
+- `-gc <0-53>` - Klika slot w GUI
+
+### W trybie logów
+
+- `.exit` - Wyjście z logów
+- `.listitems` - Pokazuje ekwipunek bota
+- Dowolny tekst - Wysyła na chat bota
 
 ### Inne
 
 - `clear` - Czyści konsolę
-- `help` - Wyświetla pomoc
-- `exit` - Zamyka aplikację (tylko w trybie konsolowym)
+- `help` - Pomoc
 
-## 💡 Przykłady użycia
+## 💡 Przykłady
 
-### Tworzenie i uruchamianie bota
-
+### Prosty start
 ```bash
-> create mojBot hypixel.net:25565 1.8.9
-Utworzono bota: mojBot
-
-> start mojBot
-Uruchomiono bota: mojBot
-[mojBot] Bot zalogowany na serwer!
-[mojBot] Bot zespawnowany w grze!
+create bot1 hypixel.net 1.8.9
+start bot1
 ```
 
-### Tworzenie bota z domyślnym portem
-
-Jeśli nie podasz portu, automatycznie zostanie użyty domyślny port **25565**:
-
+### Start z logowaniem i anti-AFK
 ```bash
-> create mojBot2 localhost 1.8.9
-Utworzono bota: mojBot2
+start bot1 -js /login haslo123 -r -j
 ```
 
-To jest równoznaczne z:
-
+### Automatyczna sekwencja (slot → prawy klik → GUI)
 ```bash
-> create mojBot2 localhost:25565 1.8.9
+start bot1 -ss 4 -rc -gc 16 -r -j
 ```
 
-### Przeglądanie logów i wysyłanie komend
-
+### Uruchomienie wszystkich botów
 ```bash
-> logs mojBot
-==================================================
-LOGI BOTA: mojBot
-Wpisz '.exit' aby wyjsc z logow
-Wpisz wiadomosc aby wyslac na chat
-==================================================
-
-[SERVER] Witaj na serwerze!
-/login mojehaslo
-[CMD] /login mojehaslo
-[SERVER] Zalogowano pomyślnie!
-.exit
-
-Wychodzenie z logow bota mojBot...
+start * -r -j
 ```
 
-## 📁 Struktura projektu
+### Sprawdzanie ekwipunku
+```bash
+listitems bot1
+listitems *
+listitems * together
+```
+
+## 🎮 Obsługiwane wersje Minecraft
+
+Wszystkie wersje wspierane przez Mineflayer (1.8 - 1.20+)
+
+## 📁 Struktura
 
 ```
 kaqvuNodeBot/
-├── server.js           # Interfejs konsolowy
-├── web.js             # Interfejs webowy
-├── package.json       # Konfiguracja projektu
-├── .env              # Konfiguracja (opcjonalnie)
-├── bots/             # Folder z zapisanymi botami (tworzony automatycznie)
-│   ├── bot1.json
-│   ├── bot2.json
-│   └── ...
-└── README.md         # Ten plik
+├── web.js              # Serwer webowy
+├── package.json        # Konfiguracja
+├── .env               # Port (opcjonalnie)
+├── bots/              # Zapisane boty (auto)
+└── web/               # Interfejs webowy
+    ├── index.html
+    ├── styles.css
+    └── script.js
 ```
 
 ## 🔧 Konfiguracja
 
-### Plik .env
-
-Możesz utworzyć plik `.env` w głównym katalogu projektu:
-
+Utwórz plik `.env`:
 ```env
 PORT=8080
 ```
 
-Jeśli plik `.env` nie istnieje, domyślny port to `8080`.
-
-## 🌐 Interfejs webowy
-
-Interfejs webowy oferuje:
-
-- 📊 Panel boczny z listą wszystkich botów i ich statusami
-- 💬 Konsolę wyświetlającą logi w czasie rzeczywistym
-- ⌨️ Pole do wpisywania komend
-- 🎨 Ciemny motyw w stylu VS Code
-- 🔄 Automatyczne odświeżanie listy botów
-
 ## ⚠️ Uwagi
 
-- Boty są zapisywane w folderze `bots/` jako pliki JSON
+- Domyślny port serwera Minecraft: 25565
+- Format IP: `ip:port` lub `ip`
 - Każdy bot wymaga unikalnej nazwy
-- Format serwera: `ip:port` lub samo `ip` (domyślny port to **25565**)
-- Wersja musi być kompatybilna z Mineflayer (np. `1.8.9`, `1.16.5`, `1.19.4`)
-- W trybie logów wszystkie wiadomości są wysyłane bezpośrednio na chat bota
-
-## 🐛 Rozwiązywanie problemów
-
-### Bot się nie łączy
-
-- Sprawdź czy adres IP i port są poprawne
-- Upewnij się, że wersja jest zgodna z serwerem
-- Sprawdź czy serwer jest online
-
-### Błąd przy instalacji
-
-- Upewnij się, że masz zainstalowane Node.js (wersja 14+)
-- Spróbuj usunąć folder `node_modules` i plik `package-lock.json`, a następnie uruchom `npm install` ponownie
-
-### Interfejs webowy nie działa
-
-- Sprawdź czy port nie jest zajęty przez inną aplikację
-- Zmień port w pliku `.env`
-- Upewnij się, że wszystkie zależności zostały zainstalowane
+- Sprawdź regulamin serwera przed użyciem botów
 
 ## 👤 Autor
 
@@ -194,4 +141,4 @@ kaqvu
 
 ---
 
-**Uwaga:** Ten projekt jest przeznaczony wyłącznie do celów edukacyjnych i testowych. Upewnij się, że używanie botów jest zgodne z regulaminem serwera, na którym je uruchamiasz.
+**Uwaga:** Projekt wyłącznie do celów edukacyjnych. Używaj zgodnie z regulaminem serwerów.

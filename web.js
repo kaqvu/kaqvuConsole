@@ -609,7 +609,7 @@ io.on('connection', (socket) => {
             }
         } else if (cmd === 'start') {
             if (parts.length < 2) {
-                socket.emit('log', 'Uzycie: start <nazwa> [flagi]');
+                socket.emit('log', 'Uzycie: start <nazwa|*> [flagi]');
                 socket.emit('log', 'Dostepne flagi:');
                 socket.emit('log', '  -js <wiadomosc> - Wiadomosc po dolaczeniu do serwera (1s)');
                 socket.emit('log', '  -r - Automatyczne ponowne laczenie');
@@ -620,11 +620,35 @@ io.on('connection', (socket) => {
                 socket.emit('log', '  -rc - Klikniecie prawym przyciskiem myszy');
                 socket.emit('log', '  -lc - Klikniecie lewym przyciskiem myszy');
                 socket.emit('log', '  -gc <0-53> - Klikniecie slotu w GUI');
+                socket.emit('log', '');
+                socket.emit('log', 'Uzyj * aby uruchomic wszystkie boty:');
+                socket.emit('log', '  start * -r -j');
             } else {
                 const botName = parts[1];
                 const flagArgs = parts.slice(2);
                 const flags = manager.parseFlags(flagArgs);
-                manager.startBot(botName, flags);
+                
+                if (botName === '*') {
+                    const allBots = Object.keys(manager.bots);
+                    if (allBots.length === 0) {
+                        socket.emit('log', 'Brak utworzonych botow!');
+                    } else {
+                        let started = 0;
+                        for (const name of allBots) {
+                            if (!manager.activeBots[name]) {
+                                manager.startBot(name, flags);
+                                started++;
+                            }
+                        }
+                        if (started === 0) {
+                            socket.emit('log', 'Wszystkie boty juz sa uruchomione!');
+                        } else {
+                            socket.emit('log', `Uruchomiono ${started} botow`);
+                        }
+                    }
+                } else {
+                    manager.startBot(botName, flags);
+                }
             }
         } else if (cmd === 'stop') {
             if (parts.length !== 2) {
