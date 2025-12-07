@@ -105,7 +105,7 @@ listitems * together
 
 ## 🎮 Obsługiwane wersje Minecraft
 
-Wszystkie wersje wspierane przez Mineflayer (1.8 - 1.20+)
+Wszystkie wersje wspierane przez Mineflayer (Stan na 7.12.2025 1.8 - 1.21.8)
 
 ## 📁 Struktura
 
