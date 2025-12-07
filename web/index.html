@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kaqvuNodeBot - Web Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>kaqvuNodeBot - Web Interface</h1>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <h2>Boty</h2>
+            <div id="botsList"></div>
+            <div class="help-text">
+                <strong>Komendy:</strong><br>
+                create &lt;nazwa&gt; &lt;ip:port&gt; &lt;wersja&gt;<br>
+                start &lt;nazwa&gt;<br>
+                stop &lt;nazwa&gt;<br>
+                delete &lt;nazwa&gt;<br>
+                logs &lt;nazwa&gt;<br>
+                list<br>
+                clear<br>
+                help
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="console" id="console"></div>
+            
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <span class="prompt">&gt;</span>
+                    <input type="text" id="commandInput" placeholder="Wpisz komende..." autofocus>
+                </div>
+                <button onclick="sendCommand()">Wyslij</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
