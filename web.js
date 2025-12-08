@@ -732,9 +732,26 @@ io.on('connection', (socket) => {
             }
         } else if (cmd === 'stop') {
             if (parts.length !== 2) {
-                socket.emit('log', 'Uzycie: stop <nazwa>');
+                socket.emit('log', 'Uzycie: stop <nazwa|*>');
             } else {
-                manager.stopBot(parts[1]);
+                const botName = parts[1];
+                
+                if (botName === '*') {
+                    const activeBots = Object.keys(manager.activeBots);
+                    if (activeBots.length === 0) {
+                        socket.emit('log', 'Brak aktywnych botow!');
+                    } else {
+                        let stopped = 0;
+                        for (const name of activeBots) {
+                            if (manager.stopBot(name)) {
+                                stopped++;
+                            }
+                        }
+                        socket.emit('log', `Zatrzymano ${stopped} botow`);
+                    }
+                } else {
+                    manager.stopBot(botName);
+                }
             }
         } else if (cmd === 'delete') {
             if (parts.length !== 2) {
