@@ -16,15 +16,40 @@
             <h2>Boty</h2>
             <div id="botsList"></div>
             <div class="help-text">
-                <strong>Komendy:</strong><br>
+                <strong>Komendy zarządzania:</strong><br>
                 .create &lt;nazwa&gt; &lt;ip:port&gt; &lt;wersja&gt;<br>
-                .start &lt;nazwa&gt;<br>
-                .stop &lt;nazwa&gt;<br>
+                .create .randomname &lt;ip:port&gt; &lt;wersja&gt; [liczba]<br>
+                .start &lt;nazwa|*&gt; [flagi]<br>
+                .stop &lt;nazwa|*&gt;<br>
                 .delete &lt;nazwa&gt;<br>
-                .logs &lt;nazwa&gt;<br>
+                .logs &lt;nazwa|*&gt;<br>
                 .list<br>
                 .clear<br>
-                .help
+                .blockchat<br>
+                .help<br>
+                <br>
+                <strong>Komendy akcji:</strong><br>
+                .listitems &lt;nazwa|*&gt; [together]<br>
+                .loopuse &lt;nazwa|*&gt;<br>
+                .walk &lt;nazwa|*&gt; &lt;kierunek&gt;<br>
+                .dropitem &lt;nazwa|*&gt; &lt;slot&gt;<br>
+                .look &lt;nazwa|*&gt; &lt;yaw&gt; &lt;pitch&gt;<br>
+                .setslot &lt;nazwa|*&gt; &lt;0-8&gt;<br>
+                .rightclick &lt;nazwa|*&gt;<br>
+                .leftclick &lt;nazwa|*&gt;<br>
+                .guiclick &lt;nazwa|*&gt; &lt;slot&gt;<br>
+                <br>
+                <strong>Flagi:</strong><br>
+                -joinsend &lt;wiadomosc&gt;<br>
+                -reconnect<br>
+                -maxreconnect &lt;liczba&gt;<br>
+                -jumpafk / -jumpafk:&lt;sek&gt;<br>
+                -sneakafk / -sneakafk:&lt;sek&gt;<br>
+                -delayflag &lt;ms&gt;<br>
+                -setslot &lt;0-8&gt;<br>
+                -rightclick<br>
+                -leftclick<br>
+                -guiclick &lt;0-53&gt;
             </div>
         </div>
         

@@ -33,6 +33,7 @@ class BotManager {
     constructor(io) {
         this.io = io;
         this.botsDir = path.join(__dirname, 'bots');
+        this.settingsPath = path.join(__dirname, 'settings.json');
         this.bots = {};
         this.activeBots = {};
         this.logsModes = {};
@@ -41,13 +42,34 @@ class BotManager {
         this.spawnFlags = {};
         this.firstSpawn = {};
         this.availableNames = [];
+        this.settings = { blockChat: false };
         
         if (!fs.existsSync(this.botsDir)) {
             fs.mkdirSync(this.botsDir);
         }
         
+        this.loadSettings();
         this.loadNames();
         this.loadBots();
+    }
+    
+    loadSettings() {
+        if (fs.existsSync(this.settingsPath)) {
+            const data = fs.readFileSync(this.settingsPath, 'utf8');
+            this.settings = JSON.parse(data);
+        } else {
+            this.saveSettings();
+        }
+    }
+    
+    saveSettings() {
+        fs.writeFileSync(this.settingsPath, JSON.stringify(this.settings, null, 2));
+    }
+    
+    toggleBlockChat() {
+        this.settings.blockChat = !this.settings.blockChat;
+        this.saveSettings();
+        return this.settings.blockChat;
     }
     
     loadNames() {
@@ -428,6 +450,23 @@ io.on('connection', (socket) => {
                         if (botsToStart.length === 0) {
                             socket.emit('log', 'Wszystkie boty juz sa uruchomione!');
                         } else {
+                            const validFlags = ['-joinsend', '-reconnect', '-maxreconnect', '-jumpafk', '-sneakafk', '-delayflag', '-setslot', '-rightclick', '-leftclick', '-guiclick'];
+                            let hasInvalidFlag = false;
+                            
+                            for (const flag of Object.keys(flags)) {
+                                const baseFlag = flag.split(':')[0];
+                                if (!validFlags.includes(baseFlag)) {
+                                    socket.emit('log', `Nieznana flaga: ${flag}`);
+                                    socket.emit('log', `Dostepne flagi: ${validFlags.join(', ')}`);
+                                    hasInvalidFlag = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (hasInvalidFlag) {
+                                return;
+                            }
+                            
                             socket.emit('log', `Uruchamianie ${botsToStart.length} botow (co 3s)...`);
                             
                             botsToStart.forEach((name, index) => {
@@ -564,6 +603,13 @@ io.on('connection', (socket) => {
             socket.emit('clearConsole');
             socket.emit('log', 'kaqvuNodeBot - Web Interface');
             socket.emit('log', '');
+        } else if (cmd === '.blockchat') {
+            const status = manager.toggleBlockChat();
+            if (status) {
+                socket.emit('log', 'Block chat WLACZONY - nie mozesz pisac w logach');
+            } else {
+                socket.emit('log', 'Block chat WYLACZONY - mozesz pisac w logach');
+            }
         } else if (cmd === '.help') {
             socket.emit('log', 'Komendy glowne:');
             socket.emit('log', '  .create <nazwa> <ip[:port]> <wersja>');
@@ -574,6 +620,7 @@ io.on('connection', (socket) => {
             socket.emit('log', '  .listitems <nazwa|*> [together]');
             socket.emit('log', '  .list');
             socket.emit('log', '  .clear');
+            socket.emit('log', '  .blockchat - wlacz/wylacz pisanie w logach');
             socket.emit('log', '  .help');
             socket.emit('log', '');
             socket.emit('log', 'Komendy akcji:');
@@ -611,6 +658,10 @@ io.on('connection', (socket) => {
         
         if (trimmed === '.exit') {
             manager.exitLogs(socket.id);
+        } else if (trimmed === '.clear') {
+            socket.emit('clearConsole');
+            socket.emit('log', 'kaqvuNodeBot - Web Interface');
+            socket.emit('log', '');
         } else if (trimmed === '.listitems') {
             manager.listItems(socket.id);
         } else if (trimmed.startsWith('.loopuse')) {
@@ -659,7 +710,11 @@ io.on('connection', (socket) => {
                 manager.executeGuiClick(socket.id, botName, parts[1]);
             }
         } else if (trimmed) {
-            manager.sendMessage(socket.id, trimmed);
+            if (manager.settings.blockChat) {
+                manager.log('Block chat jest wlaczony! Wpisz .blockchat w menu glownym aby wylaczyc.', socket.id);
+            } else {
+                manager.sendMessage(socket.id, trimmed);
+            }
         }
     });
     

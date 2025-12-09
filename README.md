@@ -385,8 +385,23 @@ Wejdź w tryb logów komendą `.logs bot1` lub `.logs *`, a następnie używaj t
 #### `.exit`
 Wychodzi z trybu logów.
 
+#### `.clear`
+Czyści konsolę (działa również w trybie logów).
+
 #### `.listitems`
 Pokazuje ekwipunek bota/botów w trybie logów.
+
+## Plik settings.json
+
+Automatycznie tworzony plik z ustawieniami:
+
+```json
+{
+  "blockChat": false
+}
+```
+
+- `blockChat` - czy zablokowane jest pisanie w logach (toggle przez `.blockchat`)
 
 ## Plik names.txt
 

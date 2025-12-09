@@ -396,41 +396,38 @@ function executeDropItem(manager, socketId, botName, slot) {
 }
 
 function executeLook(manager, socketId, botName, yawStr, pitchStr) {
-    const yawDeg = parseFloat(yawStr);
-    const pitchDeg = parseFloat(pitchStr);
-
-    if (isNaN(yawDeg) || isNaN(pitchDeg)) {
+    const yaw = parseFloat(yawStr);
+    const pitch = parseFloat(pitchStr);
+    
+    if (isNaN(yaw) || isNaN(pitch)) {
         manager.log('Yaw i pitch musza byc liczbami!', socketId);
         return false;
     }
-
-    const yaw = yawDeg * Math.PI / 180;
-    const pitch = pitchDeg * Math.PI / 180;
-
+    
     if (botName === '*') {
         const activeBots = Object.keys(manager.activeBots);
         if (activeBots.length === 0) {
             manager.log('Brak aktywnych botow!', socketId);
             return false;
         }
-
+        
         for (const name of activeBots) {
             const bot = manager.activeBots[name];
-            bot.look(yaw, pitch, true);
-            manager.log(`[${name}] Patrzenie: yaw=${yawDeg}°, pitch=${pitchDeg}°`, socketId);
+            bot.look(yaw, pitch);
+            manager.log(`[${name}] Patrzenie w kierunku: yaw=${yaw}, pitch=${pitch}`, socketId);
         }
         return true;
     }
-
+    
     if (!manager.activeBots[botName]) {
         manager.log(`Bot '${botName}' nie jest uruchomiony!`, socketId);
         return false;
     }
-
+    
     const bot = manager.activeBots[botName];
-    bot.look(yaw, pitch, true);
-    manager.log(`[${botName}] Patrzenie: yaw=${yawDeg}°, pitch=${pitchDeg}°`, socketId);
-
+    bot.look(yaw, pitch);
+    manager.log(`[${botName}] Patrzenie w kierunku: yaw=${yaw}, pitch=${pitch}`, socketId);
+    
     return true;
 }
 
