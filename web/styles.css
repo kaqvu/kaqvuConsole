@@ -9,14 +9,17 @@ body {
     background: #1e1e1e;
     color: #d4d4d4;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .header {
     background: #252526;
     padding: 15px 20px;
     border-bottom: 2px solid #007acc;
+    flex-shrink: 0;
 }
 
 .header h1 {
@@ -28,6 +31,7 @@ body {
     display: flex;
     flex: 1;
     overflow: hidden;
+    min-height: 0;
 }
 
 .sidebar {
@@ -36,12 +40,16 @@ body {
     border-right: 1px solid #3e3e42;
     padding: 20px;
     overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 0;
+    scroll-snap-type: y mandatory;
 }
 
 .sidebar h2 {
     color: #007acc;
     margin-bottom: 15px;
     font-size: 18px;
+    scroll-snap-align: start;
 }
 
 .bot-item {
@@ -50,6 +58,8 @@ body {
     margin-bottom: 10px;
     border-radius: 4px;
     border-left: 3px solid #007acc;
+    scroll-snap-align: start;
+    scroll-margin-top: 10px;
 }
 
 .bot-item.active {
@@ -75,6 +85,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .console {
@@ -82,13 +94,17 @@ body {
     background: #1e1e1e;
     padding: 20px;
     overflow-y: auto;
+    overflow-x: auto;
     font-family: 'Courier New', monospace;
     font-size: 14px;
+    min-height: 0;
 }
 
 .console-line {
     margin-bottom: 5px;
     line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .input-container {
@@ -97,6 +113,7 @@ body {
     border-top: 1px solid #3e3e42;
     display: flex;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .input-wrapper {
@@ -106,12 +123,14 @@ body {
     background: #3c3c3c;
     border-radius: 4px;
     padding: 0 10px;
+    min-width: 0;
 }
 
 .prompt {
     color: #4ec9b0;
     margin-right: 10px;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 #commandInput {
@@ -123,6 +142,7 @@ body {
     font-size: 14px;
     padding: 10px 0;
     outline: none;
+    min-width: 0;
 }
 
 button {
@@ -135,6 +155,7 @@ button {
     font-family: 'Courier New', monospace;
     font-size: 14px;
     transition: background 0.2s;
+    flex-shrink: 0;
 }
 
 button:hover {
@@ -145,10 +166,12 @@ button:hover {
     color: #858585;
     font-size: 12px;
     margin-top: 10px;
+    scroll-snap-align: start;
 }
 
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -165,15 +188,25 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+    body {
+        height: 100vh;
+        height: 100dvh;
+    }
+
     .main-container {
         flex-direction: column;
     }
     
     .sidebar {
         width: 100%;
-        max-height: 40vh;
+        max-height: 25vh;
         border-right: none;
         border-bottom: 1px solid #3e3e42;
+        padding: 15px;
+    }
+    
+    .header {
+        padding: 12px 15px;
     }
     
     .header h1 {
@@ -181,36 +214,49 @@ button:hover {
     }
     
     .console {
-        font-size: 12px;
-        padding: 10px;
+        font-size: 13px;
+        padding: 12px;
     }
     
     .input-container {
         padding: 10px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
     
     button {
-        padding: 8px 15px;
-        font-size: 12px;
+        padding: 10px 15px;
+        font-size: 13px;
     }
     
     #commandInput {
-        font-size: 12px;
+        font-size: 13px;
+        padding: 8px 0;
     }
     
     .help-text {
-        font-size: 11px;
+        font-size: 10px;
+        margin-top: 8px;
     }
     
     .bot-item {
         padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    .sidebar h2 {
+        font-size: 16px;
+        margin-bottom: 10px;
     }
 }
 
 @media (max-width: 480px) {
+    body {
+        height: 100vh;
+        height: 100dvh;
+    }
+
     .header {
-        padding: 10px 15px;
+        padding: 10px 12px;
     }
     
     .header h1 {
@@ -218,22 +264,23 @@ button:hover {
     }
     
     .sidebar {
-        padding: 15px;
-        max-height: 35vh;
+        padding: 12px;
+        max-height: 22vh;
     }
     
     .sidebar h2 {
-        font-size: 16px;
+        font-size: 15px;
+        margin-bottom: 8px;
     }
     
     .console {
-        font-size: 11px;
-        padding: 8px;
+        font-size: 12px;
+        padding: 10px;
     }
     
     .input-container {
         padding: 8px;
-        gap: 8px;
+        gap: 6px;
     }
     
     .input-wrapper {
@@ -241,11 +288,27 @@ button:hover {
     }
     
     button {
-        width: 100%;
-        padding: 10px;
+        padding: 9px 12px;
+        font-size: 12px;
     }
     
     .prompt {
         font-size: 12px;
+        margin-right: 8px;
+    }
+    
+    #commandInput {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .bot-item {
+        padding: 7px;
+        margin-bottom: 7px;
+    }
+
+    .help-text {
+        font-size: 10px;
+        margin-top: 6px;
     }
 }
