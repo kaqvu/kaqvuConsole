@@ -419,11 +419,13 @@ Automatycznie tworzony plik z ustawieniami:
 
 ```json
 {
-  "blockChat": false
+  "blockMessages": false,
+  "blockCommands": false
 }
 ```
 
-- `blockChat` - czy zablokowane jest pisanie w logach (toggle przez `.blockchat`)
+- `blockMessages` - czy zablokowane jest pisanie zwykłych wiadomości w logach (toggle przez `.blockmessages`)
+- `blockCommands` - czy zablokowane jest wysyłanie komend (/) w logach (toggle przez `.blockcommands`)
 
 ## Plik names.txt
 

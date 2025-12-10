@@ -48,7 +48,7 @@ class BotManager {
         this.spawnFlags = {};
         this.firstSpawn = {};
         this.availableNames = [];
-        this.settings = { blockChat: false };
+        this.settings = { blockMessages: false, blockCommands: false };
         
         if (!fs.existsSync(this.botsDir)) {
             fs.mkdirSync(this.botsDir);
@@ -72,10 +72,16 @@ class BotManager {
         fs.writeFileSync(this.settingsPath, JSON.stringify(this.settings, null, 2));
     }
     
-    toggleBlockChat() {
-        this.settings.blockChat = !this.settings.blockChat;
+    toggleBlockMessages() {
+        this.settings.blockMessages = !this.settings.blockMessages;
         this.saveSettings();
-        return this.settings.blockChat;
+        return this.settings.blockMessages;
+    }
+    
+    toggleBlockCommands() {
+        this.settings.blockCommands = !this.settings.blockCommands;
+        this.saveSettings();
+        return this.settings.blockCommands;
     }
     
     loadNames() {
@@ -701,12 +707,19 @@ io.on('connection', (socket) => {
             socket.emit('clearConsole');
             socket.emit('log', 'kaqvuNodeBot - Web Interface');
             socket.emit('log', '');
-        } else if (cmd === '.blockchat') {
-            const status = manager.toggleBlockChat();
+        } else if (cmd === '.blockmessages') {
+            const status = manager.toggleBlockMessages();
             if (status) {
-                socket.emit('log', 'Block chat WLACZONY - nie mozesz pisac w logach');
+                socket.emit('log', 'Block messages WLACZONY - nie mozesz pisac wiadomosci w logach');
             } else {
-                socket.emit('log', 'Block chat WYLACZONY - mozesz pisac w logach');
+                socket.emit('log', 'Block messages WYLACZONY - mozesz pisac wiadomosci w logach');
+            }
+        } else if (cmd === '.blockcommands') {
+            const status = manager.toggleBlockCommands();
+            if (status) {
+                socket.emit('log', 'Block commands WLACZONY - nie mozesz wysylac komend (/) w logach');
+            } else {
+                socket.emit('log', 'Block commands WYLACZONY - mozesz wysylac komendy (/) w logach');
             }
         } else if (cmd === '.help') {
             socket.emit('log', 'Komendy glowne:');
@@ -718,7 +731,8 @@ io.on('connection', (socket) => {
             socket.emit('log', '  .listitems <nazwa|*> [together]');
             socket.emit('log', '  .list');
             socket.emit('log', '  .clear');
-            socket.emit('log', '  .blockchat - wlacz/wylacz pisanie w logach');
+            socket.emit('log', '  .blockmessages - wlacz/wylacz pisanie wiadomosci w logach');
+            socket.emit('log', '  .blockcommands - wlacz/wylacz wysylanie komend (/) w logach');
             socket.emit('log', '  .help');
             socket.emit('log', '');
             socket.emit('log', 'Komendy akcji:');
