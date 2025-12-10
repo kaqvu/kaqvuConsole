@@ -11,12 +11,12 @@ System zarządzania wieloma botami Minecraft z interfejsem webowym. Umożliwia t
 
 ## Instalacja
 ```bash
-npm install express socket.io mineflayer dotenv
+npm install
 ```
 
 ## Uruchomienie
 ```bash
-node web.js
+npm start
 ```
 Otwórz przeglądarkę: `http://localhost:8080`
 
