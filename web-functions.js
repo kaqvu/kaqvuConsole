@@ -844,6 +844,23 @@ function sendMessage(manager, socketId, message) {
         return false;
     }
     
+    const isCommand = message.startsWith('/');
+    const isBotCommand = message.startsWith('.');
+    
+    if (isBotCommand) {
+        return false;
+    }
+    
+    if (isCommand && manager.settings.blockCommands) {
+        manager.log('Block commands jest wlaczony! Wpisz .blockcommands w menu glownym aby wylaczyc.', socketId);
+        return false;
+    }
+    
+    if (!isCommand && manager.settings.blockMessages) {
+        manager.log('Block messages jest wlaczony! Wpisz .blockmessages w menu glownym aby wylaczyc.', socketId);
+        return false;
+    }
+    
     if (botName === '*') {
         const activeBots = Object.keys(manager.activeBots);
         let sent = 0;
@@ -858,7 +875,7 @@ function sendMessage(manager, socketId, message) {
         }
         
         if (sent > 0) {
-            if (message.startsWith('/')) {
+            if (isCommand) {
                 manager.log(`[CMD -> ${sent} botow] ${message}`, socketId);
             } else {
                 manager.log(`[SEND -> ${sent} botow] ${message}`, socketId);
@@ -874,7 +891,7 @@ function sendMessage(manager, socketId, message) {
     
     try {
         manager.activeBots[botName].chat(message);
-        if (message.startsWith('/')) {
+        if (isCommand) {
             manager.log(`[CMD] ${message}`, socketId);
         } else {
             manager.log(`[SEND] ${message}`, socketId);

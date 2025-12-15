@@ -1029,11 +1029,7 @@ io.on('connection', (socket) => {
                 manager.executeExitGui(socket.id, botName);
             }
         } else if (trimmed) {
-            if (manager.settings.blockChat) {
-                manager.log('Block chat jest wlaczony! Wpisz .blockchat w menu glownym aby wylaczyc.', socket.id);
-            } else {
-                manager.sendMessage(socket.id, trimmed);
-            }
+            manager.sendMessage(socket.id, trimmed);
         }
     });
     
