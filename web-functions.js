@@ -739,13 +739,27 @@ function executeLeftClick(manager, socketId, botName) {
     return true;
 }
 
-function executeGuiClick(manager, socketId, botName, slotStr) {
+function executeGuiClick(manager, socketId, botName, slotStr, buttonStr, shiftStr) {
     const guiSlot = parseInt(slotStr);
     
     if (isNaN(guiSlot) || guiSlot < 0 || guiSlot > 53) {
         manager.log('Slot GUI musi byc liczba od 0 do 53!', socketId);
         return false;
     }
+    
+    const buttonLower = buttonStr ? buttonStr.toLowerCase() : 'left';
+    let button;
+    
+    if (buttonLower === 'left') {
+        button = 0;
+    } else if (buttonLower === 'right') {
+        button = 1;
+    } else {
+        manager.log('Button musi byc: left lub right', socketId);
+        return false;
+    }
+    
+    const mode = shiftStr && shiftStr.toLowerCase() === 'shift' ? 1 : 0;
     
     if (botName === '*') {
         const activeBots = Object.keys(manager.activeBots);
@@ -758,8 +772,10 @@ function executeGuiClick(manager, socketId, botName, slotStr) {
             const bot = manager.activeBots[name];
             const window = bot.currentWindow;
             if (window) {
-                bot.clickWindow(guiSlot, 0, 0);
-                manager.log(`[${name}] Kliknieto slot GUI: ${guiSlot}`, socketId);
+                bot.clickWindow(guiSlot, button, mode);
+                const buttonName = button === 0 ? 'left' : 'right';
+                const modeName = mode === 1 ? ' + shift' : '';
+                manager.log(`[${name}] Kliknieto slot GUI: ${guiSlot} (${buttonName}${modeName})`, socketId);
             } else {
                 manager.log(`[${name}] Brak otwartego GUI`, socketId);
             }
@@ -775,8 +791,10 @@ function executeGuiClick(manager, socketId, botName, slotStr) {
     const bot = manager.activeBots[botName];
     const window = bot.currentWindow;
     if (window) {
-        bot.clickWindow(guiSlot, 0, 0);
-        manager.log(`[${botName}] Kliknieto slot GUI: ${guiSlot}`, socketId);
+        bot.clickWindow(guiSlot, button, mode);
+        const buttonName = button === 0 ? 'left' : 'right';
+        const modeName = mode === 1 ? ' + shift' : '';
+        manager.log(`[${botName}] Kliknieto slot GUI: ${guiSlot} (${buttonName}${modeName})`, socketId);
     } else {
         manager.log(`[${botName}] Brak otwartego GUI`, socketId);
     }
@@ -1484,18 +1502,28 @@ function executeStats(manager, socketId, botName) {
     return true;
 }
 
-function executeEqClick(manager, socketId, botName, slotStr, buttonStr, modeStr) {
+function executeEqClick(manager, socketId, botName, slotStr, buttonStr, shiftStr) {
     const slot = parseInt(slotStr);
-    const button = parseInt(buttonStr);
-    const mode = parseInt(modeStr);
     
-    if (isNaN(slot) || isNaN(button) || isNaN(mode)) {
-        manager.log('Slot, button i mode musza byc liczbami!', socketId);
-        manager.log('Uzycie: .eqclick <nazwa|*> <slot> <button> <mode>', socketId);
-        manager.log('Button: 0=lewy, 1=prawy, 2=srodkowy', socketId);
-        manager.log('Mode: 0=normalny, 1=shift, 2=number key', socketId);
+    if (isNaN(slot)) {
+        manager.log('Slot musi byc liczba!', socketId);
+        manager.log('Uzycie: .eqclick <nazwa|*> <slot> <left|right> [shift]', socketId);
         return false;
     }
+    
+    const buttonLower = buttonStr.toLowerCase();
+    let button;
+    
+    if (buttonLower === 'left') {
+        button = 0;
+    } else if (buttonLower === 'right') {
+        button = 1;
+    } else {
+        manager.log('Button musi byc: left lub right', socketId);
+        return false;
+    }
+    
+    const mode = shiftStr && shiftStr.toLowerCase() === 'shift' ? 1 : 0;
     
     if (botName === '*') {
         const activeBots = Object.keys(manager.activeBots);
@@ -1524,9 +1552,9 @@ function clickEqSlot(manager, socketId, botName, slot, button, mode) {
     
     try {
         bot.clickWindow(slot, button, mode).then(() => {
-            const buttonName = button === 0 ? 'lewy' : button === 1 ? 'prawy' : 'srodkowy';
-            const modeName = mode === 0 ? 'normalny' : mode === 1 ? 'shift' : 'number key';
-            manager.log(`[${botName}] Kliknieto slot ${slot} (button: ${buttonName}, mode: ${modeName})`, socketId);
+            const buttonName = button === 0 ? 'left' : 'right';
+            const modeName = mode === 1 ? ' + shift' : '';
+            manager.log(`[${botName}] Kliknieto slot ${slot} (${buttonName}${modeName})`, socketId);
         }).catch(err => {
             manager.log(`[${botName}] Blad klikania: ${err.message}`, socketId);
         });

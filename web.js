@@ -487,8 +487,8 @@ class BotManager {
         return executeLeftClick(this, socketId, botName);
     }
     
-    executeGuiClick(socketId, botName, slot) {
-        return executeGuiClick(this, socketId, botName, slot);
+    executeGuiClick(socketId, botName, slot, button, shift) {
+        return executeGuiClick(this, socketId, botName, slot, button, shift);
     }
     
     executeAutoEat(socketId, botName) {
@@ -515,8 +515,8 @@ class BotManager {
         return executeStats(this, socketId, botName);
     }
     
-    executeEqClick(socketId, botName, slot, button, mode) {
-        return executeEqClick(this, socketId, botName, slot, button, mode);
+    executeEqClick(socketId, botName, slot, button, shift) {
+        return executeEqClick(this, socketId, botName, slot, button, shift);
     }
 }
 
@@ -741,12 +741,13 @@ io.on('connection', (socket) => {
                 manager.executeLeftClick(socket.id, parts[1]);
             }
         } else if (cmd === '.guiclick') {
-            if (parts.length !== 3) {
-                socket.emit('log', 'Uzycie: .guiclick <nazwa|*> <0-53>');
-                socket.emit('log', 'Przyklad: .guiclick bot1 10');
-                socket.emit('log', 'Przyklad: .guiclick * 0');
+            if (parts.length < 3) {
+                socket.emit('log', 'Uzycie: .guiclick <nazwa|*> <slot> <left|right> [shift]');
+                socket.emit('log', 'Przyklad: .guiclick bot1 10 left - kliknie lewy przycisk');
+                socket.emit('log', 'Przyklad: .guiclick bot1 10 right - kliknie prawy przycisk');
+                socket.emit('log', 'Przyklad: .guiclick * 0 left shift - lewy + shift');
             } else {
-                manager.executeGuiClick(socket.id, parts[1], parts[2]);
+                manager.executeGuiClick(socket.id, parts[1], parts[2], parts[3], parts[4]);
             }
         } else if (cmd === '.autoeat') {
             if (parts.length !== 2) {
@@ -797,14 +798,11 @@ io.on('connection', (socket) => {
                 manager.executeStats(socket.id, parts[1]);
             }
         } else if (cmd === '.eqclick') {
-            if (parts.length !== 5) {
-                socket.emit('log', 'Uzycie: .eqclick <nazwa|*> <slot> <button> <mode>');
-                socket.emit('log', 'Przyklad: .eqclick bot1 38 0 0 - lewy przycisk normalny');
-                socket.emit('log', 'Przyklad: .eqclick bot1 38 1 0 - prawy przycisk normalny');
-                socket.emit('log', 'Przyklad: .eqclick * 36 0 1 - lewy + shift');
-                socket.emit('log', '');
-                socket.emit('log', 'Button: 0=lewy, 1=prawy, 2=srodkowy');
-                socket.emit('log', 'Mode: 0=normalny, 1=shift, 2=number key');
+            if (parts.length < 4) {
+                socket.emit('log', 'Uzycie: .eqclick <nazwa|*> <slot> <left|right> [shift]');
+                socket.emit('log', 'Przyklad: .eqclick bot1 38 left - kliknie lewy przycisk');
+                socket.emit('log', 'Przyklad: .eqclick bot1 38 right - kliknie prawy przycisk');
+                socket.emit('log', 'Przyklad: .eqclick * 36 left shift - lewy + shift');
                 socket.emit('log', '');
                 socket.emit('log', 'Uzyj .listitems aby zobaczyc numery slotow!');
             } else {
@@ -866,14 +864,14 @@ io.on('connection', (socket) => {
             socket.emit('log', '  .setslot <nazwa|*> <0-8>');
             socket.emit('log', '  .rightclick <nazwa|*>');
             socket.emit('log', '  .leftclick <nazwa|*>');
-            socket.emit('log', '  .guiclick <nazwa|*> <0-53>');
+            socket.emit('log', '  .guiclick <nazwa|*> <slot> <left|right> [shift]');
             socket.emit('log', '  .autoeat <nazwa|*>');
             socket.emit('log', '  .follow <nazwa|*> <nick gracza>');
             socket.emit('log', '  .autofish <nazwa|*>');
             socket.emit('log', '  .goto <nazwa|*> <x> <y> <z>');
             socket.emit('log', '  .attack <nazwa|*> <mob|player|all> <range>');
             socket.emit('log', '  .stats <nazwa|*>');
-            socket.emit('log', '  .eqclick <nazwa|*> <slot> <button> <mode>');
+            socket.emit('log', '  .eqclick <nazwa|*> <slot> <left|right> [shift]');
             socket.emit('log', '');
             socket.emit('log', 'Flagi startu:');
             socket.emit('log', '  -joinsend <wiadomosc> - Wiadomosc po dolaczeniu (1s)');
@@ -956,7 +954,7 @@ io.on('connection', (socket) => {
             const parts = trimmed.split(/\s+/);
             const botName = manager.logsModes[socket.id];
             if (botName && parts[1]) {
-                manager.executeGuiClick(socket.id, botName, parts[1]);
+                manager.executeGuiClick(socket.id, botName, parts[1], parts[2], parts[3]);
             }
         } else if (trimmed === '.autoeat') {
             const botName = manager.logsModes[socket.id];
@@ -994,7 +992,7 @@ io.on('connection', (socket) => {
         } else if (trimmed.startsWith('.eqclick ')) {
             const parts = trimmed.split(/\s+/);
             const botName = manager.logsModes[socket.id];
-            if (botName && parts[1] && parts[2] && parts[3]) {
+            if (botName && parts[1] && parts[2]) {
                 manager.executeEqClick(socket.id, botName, parts[1], parts[2], parts[3]);
             }
         } else if (trimmed) {
