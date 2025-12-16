@@ -1551,13 +1551,36 @@ function clickEqSlot(manager, socketId, botName, slot, button, mode) {
     const bot = manager.activeBots[botName];
     
     try {
-        bot.clickWindow(slot, button, mode).then(() => {
-            const buttonName = button === 0 ? 'left' : 'right';
-            const modeName = mode === 1 ? ' + shift' : '';
-            manager.log(`[${botName}] Kliknieto slot ${slot} (${buttonName}${modeName})`, socketId);
-        }).catch(err => {
-            manager.log(`[${botName}] Blad klikania: ${err.message}`, socketId);
-        });
+        if (button === 0) {
+            // Lewy przycisk
+            if (mode === 1) {
+                bot.clickWindow(slot, 0, 1).then(() => {
+                    manager.log(`[${botName}] Kliknieto slot ${slot} (left + shift)`, socketId);
+                }).catch(err => {
+                    manager.log(`[${botName}] Blad klikania: ${err.message}`, socketId);
+                });
+            } else {
+                bot.clickWindow(slot, 0, 0).then(() => {
+                    manager.log(`[${botName}] Kliknieto slot ${slot} (left)`, socketId);
+                }).catch(err => {
+                    manager.log(`[${botName}] Blad klikania: ${err.message}`, socketId);
+                });
+            }
+        } else {
+            if (mode === 1) {
+                bot.clickWindow(slot, 1, 1).then(() => {
+                    manager.log(`[${botName}] Kliknieto slot ${slot} (right + shift)`, socketId);
+                }).catch(err => {
+                    manager.log(`[${botName}] Blad klikania: ${err.message}`, socketId);
+                });
+            } else {
+                bot.clickWindow(slot, 1, 0).then(() => {
+                    manager.log(`[${botName}] Kliknieto slot ${slot} (right)`, socketId);
+                }).catch(err => {
+                    manager.log(`[${botName}] Blad klikania: ${err.message}`, socketId);
+                });
+            }
+        }
         return true;
     } catch (err) {
         manager.log(`[${botName}] Blad podczas klikania: ${err.message}`, socketId);
