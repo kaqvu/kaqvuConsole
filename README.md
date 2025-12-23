@@ -7,8 +7,8 @@
 <br>
 
 <img src="https://img.shields.io/badge/Node.js-✔-green?style=for-the-badge">
-<img src="https://img.shields.io/badge/Minecraft-Bots-brightgreen?style=for-the-badge">
-<img src="https://img.shields.io/badge/Status-Aktywny-success?style=for-the-badge">
+<img src="https://img.shields.io/badge/Minecraft-BOTS-brightgreen?style=for-the-badge">
+<img src="https://img.shields.io/badge/Status-AKTUALNY-success?style=for-the-badge">
 
 <br><br>
 
