@@ -74,7 +74,7 @@ socket.on('botList', (bots) => {
         
         const nameEl = document.createElement('div');
         nameEl.className = 'bot-name';
-        nameEl.textContent = bot.name;
+        nameEl.textContent = `#${bot.id} ${bot.name}`;
         
         const statusEl = document.createElement('div');
         statusEl.className = 'bot-status';

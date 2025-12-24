@@ -60,6 +60,7 @@ class BotManager {
         this.firstSpawn = {};
         this.availableNames = [];
         this.settings = { blockMessages: false, blockCommands: false };
+        this.maxBotId = 0;
         
         this.init();
     }
@@ -133,6 +134,11 @@ class BotManager {
                     const data = await fs.readFile(path.join(this.botsDir, file), 'utf8');
                     const botData = JSON.parse(data);
                     this.bots[botData.name] = botData;
+                    
+                    // Oblicz maxBotId
+                    if (botData.id && botData.id > this.maxBotId) {
+                        this.maxBotId = botData.id;
+                    }
                 } catch (err) {
                     this.log(`Blad wczytywania bota ${file}: ${err.message}`);
                 }
@@ -208,7 +214,10 @@ class BotManager {
             return false;
         }
         
+        this.maxBotId++;
+        
         const botData = {
+            id: this.maxBotId,
             name: name,
             host: serverData.host,
             port: serverData.port,
@@ -217,7 +226,7 @@ class BotManager {
         
         this.bots[name] = botData;
         await this.saveBot(botData);
-        this.log(`Utworzono bota: ${name}`);
+        this.log(`Utworzono bota: ${name} (ID: ${this.maxBotId})`);
         this.io.emit('botList', this.getBotsList());
         return true;
     }
@@ -419,15 +428,19 @@ class BotManager {
     }
     
     getBotsList() {
-        return Object.keys(this.bots).map(name => {
-            const isActive = this.activeBots[name] || this.reconnectFlags[name];
-            const state = this.botStates[name] || 'disconnected';
-            return {
-                name: name,
-                active: isActive ? true : false,
-                connected: state === 'connected'
-            };
-        });
+        return Object.keys(this.bots)
+            .map(name => {
+                const bot = this.bots[name];
+                const isActive = this.activeBots[name] || this.reconnectFlags[name];
+                const state = this.botStates[name] || 'disconnected';
+                return {
+                    id: bot.id || 0,
+                    name: name,
+                    active: isActive ? true : false,
+                    connected: state === 'connected'
+                };
+            })
+            .sort((a, b) => a.id - b.id);
     }
     
     enterLogs(socketId, botName) {
@@ -511,7 +524,7 @@ io.on('connection', (socket) => {
     console.log('Nowy klient polaczony');
     
     socket.on('getInitialData', () => {
-        socket.emit('log', 'kaqvuConsole - Web Interface');
+        socket.emit('log', 'kaqvuNodeBot - Web Interface');
         socket.emit('log', '');
         socket.emit('botList', manager.getBotsList());
     });
@@ -748,7 +761,7 @@ io.on('connection', (socket) => {
             }
         } else if (cmd === '.clear') {
             socket.emit('clearConsole');
-            socket.emit('log', 'kaqvuConsole - Web Interface');
+            socket.emit('log', 'kaqvuNodeBot - Web Interface');
             socket.emit('log', '');
         } else if (cmd === '.blockmessages') {
             const status = await manager.toggleBlockMessages();
@@ -783,7 +796,7 @@ io.on('connection', (socket) => {
             manager.exitLogs(socket.id);
         } else if (trimmed === '.clear') {
             socket.emit('clearConsole');
-            socket.emit('log', 'kaqvuConsole - Web Interface');
+            socket.emit('log', 'kaqvuNodeBot - Web Interface');
             socket.emit('log', '');
         } else if (trimmed === '.listitems') {
             manager.listItems(socket.id);
@@ -879,7 +892,7 @@ io.on('connection', (socket) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`\nkaqvuConsole - Web Interface`);
+    console.log(`\nkaqvuNodeBot - Web Interface`);
     console.log(`Server dziala na http://localhost:${PORT}`);
     console.log(`Otwórz przegladarke i przejdz do tego adresu\n`);
 });
