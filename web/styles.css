@@ -6,8 +6,8 @@
 
 body {
     font-family: 'Courier New', monospace;
-    background: #1e1e1e;
-    color: #d4d4d4;
+    background: #0a0a0a;
+    color: #00ff41;
     height: 100vh;
     height: 100dvh;
     display: flex;
@@ -16,15 +16,17 @@ body {
 }
 
 .header {
-    background: #252526;
+    background: #111;
     padding: 15px 20px;
-    border-bottom: 2px solid #007acc;
+    border-bottom: 2px solid #00ff41;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
     flex-shrink: 0;
 }
 
 .header h1 {
-    color: #007acc;
+    color: #00ff41;
     font-size: 24px;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
 }
 
 .main-container {
@@ -36,49 +38,69 @@ body {
 
 .sidebar {
     width: 300px;
-    background: #252526;
-    border-right: 1px solid #3e3e42;
+    background: #0d0d0d;
+    border-right: 2px solid #00ff41;
+    box-shadow: 2px 0 15px rgba(0, 255, 65, 0.3);
     padding: 20px;
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 0;
-    scroll-snap-type: y mandatory;
 }
 
 .sidebar h2 {
-    color: #007acc;
+    color: #00ff41;
     margin-bottom: 15px;
     font-size: 18px;
-    scroll-snap-align: start;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.8);
 }
 
 .bot-item {
-    background: #2d2d30;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    border-left: 3px solid #007acc;
-    scroll-snap-align: start;
-    scroll-margin-top: 10px;
+    background: #0a0a0a;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
 }
 
-.bot-item.active {
-    border-left-color: #4ec9b0;
+.bot-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 255, 65, 0.8), 0 0 50px rgba(0, 255, 65, 0.4);
+    border-color: #0f0;
+    z-index: 10;
+}
+
+.bot-item::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #00ff41, #0f0, #00ff41);
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+    filter: blur(10px);
+}
+
+.bot-item:hover::before {
+    opacity: 0.5;
 }
 
 .bot-name {
     font-weight: bold;
-    color: #dcdcaa;
+    color: #00ff41;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+    font-size: 15px;
 }
 
 .bot-status {
     font-size: 12px;
-    color: #858585;
+    color: #00ff41;
     margin-top: 5px;
-}
-
-.bot-status.active {
-    color: #4ec9b0;
+    opacity: 0.8;
 }
 
 .content {
@@ -91,7 +113,7 @@ body {
 
 .console {
     flex: 1;
-    background: #1e1e1e;
+    background: #0a0a0a;
     padding: 20px;
     overflow-y: auto;
     overflow-x: auto;
@@ -105,12 +127,15 @@ body {
     line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-word;
+    color: #00ff41;
+    text-shadow: 0 0 3px rgba(0, 255, 65, 0.3);
 }
 
 .input-container {
-    background: #252526;
+    background: #111;
     padding: 15px 20px;
-    border-top: 1px solid #3e3e42;
+    border-top: 2px solid #00ff41;
+    box-shadow: 0 -2px 15px rgba(0, 255, 65, 0.3);
     display: flex;
     gap: 10px;
     flex-shrink: 0;
@@ -120,65 +145,94 @@ body {
     flex: 1;
     display: flex;
     align-items: center;
-    background: #3c3c3c;
-    border-radius: 4px;
-    padding: 0 10px;
+    background: #0a0a0a;
+    border-radius: 20px;
+    padding: 0 15px;
     min-width: 0;
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+    transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+    box-shadow: 0 0 25px rgba(0, 255, 65, 0.8), 0 0 50px rgba(0, 255, 65, 0.4);
+    border-color: #0f0;
 }
 
 .prompt {
-    color: #4ec9b0;
+    color: #00ff41;
     margin-right: 10px;
     font-weight: bold;
     flex-shrink: 0;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
 }
 
 #commandInput {
     flex: 1;
     background: transparent;
     border: none;
-    color: #d4d4d4;
+    color: #00ff41;
     font-family: 'Courier New', monospace;
     font-size: 14px;
-    padding: 10px 0;
+    padding: 12px 0;
     outline: none;
     min-width: 0;
 }
 
+#commandInput::placeholder {
+    color: rgba(0, 255, 65, 0.4);
+}
+
 button {
-    background: #007acc;
-    color: white;
+    background: #00ff41;
+    color: #0a0a0a;
     border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    padding: 12px 25px;
+    border-radius: 20px;
     cursor: pointer;
     font-family: 'Courier New', monospace;
     font-size: 14px;
-    transition: background 0.2s;
+    font-weight: bold;
+    transition: all 0.3s ease;
     flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+button:hover::before {
+    transform: translateX(100%);
 }
 
 button:hover {
-    background: #005a9e;
+    background: #0f0;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.8), 0 0 60px rgba(0, 255, 65, 0.4);
+    transform: translateY(-2px);
 }
 
-.bot-status.status-connected {
-    color: #4ec9b0;
-}
-
-.bot-status.status-active {
-    color: #ce9178;
-}
-
-.bot-status.status-inactive {
-    color: #f48771;
+button:active {
+    transform: translateY(0);
 }
 
 .help-text {
-    color: #858585;
+    color: rgba(0, 255, 65, 0.6);
     font-size: 12px;
     margin-top: 10px;
-    scroll-snap-align: start;
+    line-height: 1.6;
+}
+
+.help-text strong {
+    color: #00ff41;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
 }
 
 ::-webkit-scrollbar {
@@ -187,140 +241,34 @@ button:hover {
 }
 
 ::-webkit-scrollbar-track {
-    background: #1e1e1e;
+    background: #0a0a0a;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #3e3e42;
+    background: #00ff41;
     border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #4e4e52;
+    background: #0f0;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.8);
 }
 
-@media (max-width: 768px) {
-    body {
-        height: 100vh;
-        height: 100dvh;
-    }
+.bot-item.active {
+    border-color: #0f0;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
 
-    .main-container {
-        flex-direction: column;
+@keyframes neon-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
     }
-    
-    .sidebar {
-        width: 100%;
-        max-height: 25vh;
-        border-right: none;
-        border-bottom: 1px solid #3e3e42;
-        padding: 15px;
-    }
-    
-    .header {
-        padding: 12px 15px;
-    }
-    
-    .header h1 {
-        font-size: 18px;
-    }
-    
-    .console {
-        font-size: 13px;
-        padding: 12px;
-    }
-    
-    .input-container {
-        padding: 10px;
-        flex-wrap: nowrap;
-    }
-    
-    button {
-        padding: 10px 15px;
-        font-size: 13px;
-    }
-    
-    #commandInput {
-        font-size: 13px;
-        padding: 8px 0;
-    }
-    
-    .help-text {
-        font-size: 10px;
-        margin-top: 8px;
-    }
-    
-    .bot-item {
-        padding: 8px;
-        margin-bottom: 8px;
-    }
-
-    .sidebar h2 {
-        font-size: 16px;
-        margin-bottom: 10px;
+    50% {
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
     }
 }
 
-@media (max-width: 480px) {
-    body {
-        height: 100vh;
-        height: 100dvh;
-    }
-
-    .header {
-        padding: 10px 12px;
-    }
-    
-    .header h1 {
-        font-size: 16px;
-    }
-    
-    .sidebar {
-        padding: 12px;
-        max-height: 22vh;
-    }
-    
-    .sidebar h2 {
-        font-size: 15px;
-        margin-bottom: 8px;
-    }
-    
-    .console {
-        font-size: 12px;
-        padding: 10px;
-    }
-    
-    .input-container {
-        padding: 8px;
-        gap: 6px;
-    }
-    
-    .input-wrapper {
-        padding: 0 8px;
-    }
-    
-    button {
-        padding: 9px 12px;
-        font-size: 12px;
-    }
-    
-    .prompt {
-        font-size: 12px;
-        margin-right: 8px;
-    }
-    
-    #commandInput {
-        font-size: 12px;
-        padding: 8px 0;
-    }
-
-    .bot-item {
-        padding: 7px;
-        margin-bottom: 7px;
-    }
-
-    .help-text {
-        font-size: 10px;
-        margin-top: 6px;
-    }
+.bot-item.active {
+    animation: neon-glow 2s ease-in-out infinite;
 }
