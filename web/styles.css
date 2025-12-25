@@ -316,6 +316,33 @@ button:active {
         border-bottom: 2px solid #00ff41;
         box-shadow: 0 2px 15px rgba(0, 255, 65, 0.3);
         padding: 15px;
+        flex-shrink: 0;
+    }
+    
+    .content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+    
+    .console {
+        font-size: 13px;
+        padding: 12px;
+        padding-bottom: 80px;
+        flex: 1;
+        overflow-y: auto;
+    }
+    
+    .input-container {
+        padding: 10px;
+        flex-wrap: nowrap;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
     }
     
     .header {
@@ -324,16 +351,6 @@ button:active {
     
     .header h1 {
         font-size: 18px;
-    }
-    
-    .console {
-        font-size: 13px;
-        padding: 12px;
-    }
-    
-    .input-container {
-        padding: 10px;
-        flex-wrap: nowrap;
     }
     
     button {
@@ -382,7 +399,7 @@ button:active {
     
     .sidebar {
         padding: 12px;
-        max-height: 30vh;
+        max-height: 25vh;
     }
     
     .sidebar h2 {
@@ -393,6 +410,7 @@ button:active {
     .console {
         font-size: 12px;
         padding: 10px;
+        padding-bottom: 80px;
     }
     
     .input-container {

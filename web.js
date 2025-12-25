@@ -414,6 +414,8 @@ class BotManager {
         delete this.spawnFlags[name];
         delete this.firstSpawn[name];
         
+        const deletedId = this.bots[name].id || 0;
+        
         try {
             const jsonPath = path.join(this.botsDir, `${name}.json`);
             await fs.unlink(jsonPath);
@@ -422,6 +424,20 @@ class BotManager {
         }
         
         delete this.bots[name];
+        
+        // Przenumeruj wszystkie boty z wyzszym ID
+        for (const botName in this.bots) {
+            if (this.bots[botName].id > deletedId) {
+                this.bots[botName].id--;
+                await this.saveBot(this.bots[botName]);
+            }
+        }
+        
+        // Zmniejsz maxBotId
+        if (this.maxBotId > 0) {
+            this.maxBotId--;
+        }
+        
         this.log(`Usunieto bota: ${name}`);
         this.io.emit('botList', this.getBotsList());
         return true;
@@ -586,7 +602,9 @@ io.on('connection', (socket) => {
                     if (allBots.length === 0) {
                         socket.emit('log', 'Brak utworzonych botow!');
                     } else {
-                        const botsToStart = allBots.filter(name => !manager.activeBots[name]);
+                        const botsToStart = allBots
+                            .filter(name => !manager.activeBots[name])
+                            .sort((a, b) => (manager.bots[a].id || 0) - (manager.bots[b].id || 0));
                         
                         if (botsToStart.length === 0) {
                             socket.emit('log', 'Wszystkie boty juz sa uruchomione!');
