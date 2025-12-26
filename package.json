@@ -2,7 +2,7 @@
   "name": "kaqvuConsole",
   "version": "5.48",
   "description": "AFK BOTS MANAGMENT",
-  "main": "app.js",
+  "main": "web.js",
   "scripts": {
     "start": "node web.js",
     "web": "node web.js"
